@@ -1,0 +1,48 @@
+export const issues = [
+  "Traffic Jam",
+  "Pollution",
+  "Corruption",
+  "Unemployment",
+  "Overpopulation",
+  "Inadequate Infrastructure",
+  "Health Care Access",
+  "Education Quality",
+  "Natural Disasters",
+  "Waste Management",
+];
+
+export const districts = [
+  "Dhaka",
+  "Chittagong",
+  "Khulna",
+  "Rajshahi",
+  "Barisal",
+  "Sylhet",
+  "Rangpur",
+  "Mymensingh",
+  "Cumilla",
+  "Narayanganj",
+  "Pabna",
+  "Netrakona",
+  "Bhola",
+  "Brahmanbaria",
+  "Jashore",
+];
+
+export const areas = [
+  "Gulshan",
+  "Dhanmondi",
+  "Shahbagh",
+  "Mirpur",
+  "Chandgaon",
+  "Pahartali",
+  "Sadarghat",
+  "Banani",
+  "Motijheel",
+  "Bashundhara",
+  "Khilgaon",
+  "Savar",
+  "Sylhet Sadar",
+  "Rangpur Sadar",
+  "Barisal Sadar",
+];
