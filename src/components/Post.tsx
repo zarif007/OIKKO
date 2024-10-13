@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -5,27 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { BsImages } from "react-icons/bs";
-
-interface Location {
-  district: string;
-  area: string;
-}
-
-interface IPost {
-  id: string;
-  title: string;
-  content?: string;
-  author: string;
-  from: Date | string;
-  to: Date | string;
-  category: string;
-  location?: Location;
-  images?: string[];
-  upVote: number;
-  downVote: number;
-  createdAt: Date | string;
-  updatedAt: Date | string;
-}
+import Link from "next/link";
+import IPost, { Location } from "@/types/post";
 
 const Post: React.FC<{ post: IPost }> = ({ post }) => {
   const [vote, setVote] = useState<"" | "up" | "down">("");
@@ -42,6 +24,16 @@ const Post: React.FC<{ post: IPost }> = ({ post }) => {
     }
     setVote(type);
   };
+
+  const isLocation = (location: any): location is Location => {
+    return (
+      location &&
+      typeof location === "object" &&
+      "district" in location &&
+      "area" in location
+    );
+  };
+
   return (
     <Card className="w-full my-4">
       <div className="flex items-center">
@@ -69,11 +61,17 @@ const Post: React.FC<{ post: IPost }> = ({ post }) => {
         <div className="w-full">
           <CardHeader>
             <CardTitle className="flex gap-3">
-              <p className="font-bold">{post.title}</p>
+              <Link href={`/post/${post.id}`} className="font-bold">
+                {post.title}
+              </Link>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{post.content}</p>
+            <p>
+              {post?.content && post?.content?.length > 100
+                ? `${post.content.substring(0, 100)}...`
+                : post.content}
+            </p>
           </CardContent>
           <div className="flex justify-end p-2 items-center space-x-2">
             {post.images?.length ? (
@@ -87,7 +85,9 @@ const Post: React.FC<{ post: IPost }> = ({ post }) => {
             <div className="flex space-x-1 items-center">
               <FaMapMarkerAlt className="text-red-500 w-5 h-5" />
               <p className="text-sm font-medium">
-                {post.location?.district}, {post.location?.area}
+                {isLocation(post.location)
+                  ? `${post.location.district}, ${post.location.area}`
+                  : "Location not available"}
               </p>
             </div>
             <p className="bg-white text-black px-3 py-1 text-sm font-medium rounded-xl whitespace-nowrap">

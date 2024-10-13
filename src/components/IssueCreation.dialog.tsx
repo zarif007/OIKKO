@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -12,53 +10,48 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
-import DatePicker from "./ui/datepicker";
-import { areas, districts, issues } from "@/utils/constants";
+import FirstStepForm from "./FirstStepForm";
+import SecondStepForm from "./SecondStepForm";
+import { useRouter } from "next/navigation";
 
 const IssueCreationDialog = () => {
+  const router = useRouter();
+
+  const [steps, setSteps] = useState<number>(1);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const [post, setPost] = useState({
-    name: "",
+    author: "",
+    title: "",
+    content: "",
     location: {
       district: "",
       area: "",
     },
     category: "",
-    fromDate: null,
-    toDate: null,
+    from: null,
+    to: null,
+    images: [] as string[],
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setPost({ ...post, [id]: value });
-  };
-
-  const handleSelectChange = (key: string, value: string) => {
-    setPost({ ...post, [key]: value });
-  };
-
-  const handleLocationChange = (key: string, value: string) => {
-    setPost({
-      ...post,
-      location: {
-        ...post.location,
-        [key]: value,
-      },
-    });
-  };
-
-  const handleDateChange = (dateKey: string, date: Date) => {
-    setPost({ ...post, [dateKey]: date });
-  };
-
-  const handlePostClick = () => {
-    console.log(post);
+  const handlePostSubmit = async () => {
+    setIsSubmitting(true); // Set loading state to true
+    try {
+      const response = await fetch("/api/add-post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(post),
+      });
+      const result = await response.json();
+      console.log(result.data.id);
+      router.push("/post/" + result.data.id);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -76,107 +69,31 @@ const IssueCreationDialog = () => {
           <CardContent className="">
             <form className="">
               <div className="grid gap-4">
-                {/* Name Field */}
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="Your Name"
-                    value={post.name}
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                {/* Location Select */}
-                <div className="flex flex-col md:flex-row md:space-x-2 md:space-y-0 space-y-2">
-                  <div className="flex flex-col w-full space-y-1">
-                    <Label htmlFor="district">District</Label>
-                    <Select
-                      onValueChange={(value) =>
-                        handleLocationChange("district", value)
-                      }
-                    >
-                      <SelectTrigger id="district">
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-black" position="popper">
-                        {districts.map((district) => (
-                          <SelectItem key={district} value={district}>
-                            {district}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex flex-col w-full space-y-1">
-                    <Label htmlFor="area">Area</Label>
-                    <Select
-                      onValueChange={(value) =>
-                        handleLocationChange("area", value)
-                      }
-                    >
-                      <SelectTrigger id="area">
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-black" position="popper">
-                        {areas.map((area) => (
-                          <SelectItem key={area} value={area}>
-                            {area}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Category Selection */}
-                <div className="flex flex-col space-y-1.5 w-full">
-                  <Label htmlFor="category">Category</Label>
-                  <div className="flex flex-wrap max-w-full overflow-hidden">
-                    {issues.map((issue) => (
-                      <p
-                        className={`p-1 px-2 cursor-pointer bg-white text-black m-1 rounded-md text-sm font-medium ${
-                          post.category === issue
-                            ? "bg-gray-900 text-white"
-                            : ""
-                        }`}
-                        key={issue}
-                        onClick={() => handleSelectChange("category", issue)}
-                      >
-                        {issue}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Date Pickers */}
-                <div className="flex flex-col md:flex-row md:space-x-2 md:space-y-0 space-y-2">
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <Label htmlFor="fromDate">From</Label>
-                    <DatePicker
-                      dateKey="fromDate"
-                      handleDateChange={handleDateChange}
-                    />
-                  </div>
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <Label htmlFor="toDate">To</Label>
-                    <DatePicker
-                      dateKey="toDate"
-                      handleDateChange={handleDateChange}
-                    />
-                  </div>
-                </div>
+                {steps === 1 ? (
+                  <FirstStepForm post={post} setPost={setPost} />
+                ) : (
+                  <SecondStepForm post={post} setPost={setPost} />
+                )}
               </div>
             </form>
           </CardContent>
-          <CardFooter className="flex justify-between w-full">
+          <CardFooter className="flex justify-between space-x-2 w-full">
+            {steps === 2 && (
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setSteps(1)}
+              >
+                Back
+              </Button>
+            )}
             <Button
               variant="default"
               className="w-full"
-              onClick={handlePostClick}
+              onClick={steps === 1 ? () => setSteps(2) : handlePostSubmit}
+              disabled={isSubmitting} // Disable button during submission
             >
-              Post
+              {isSubmitting ? "Posting..." : steps === 1 ? "Next" : "Post"}
             </Button>
           </CardFooter>
         </Card>

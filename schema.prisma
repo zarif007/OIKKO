@@ -11,9 +11,9 @@ datasource db {
 }
 
 model Post {
-    id      String  @id @default(cuid())
+    id      String @id @default(cuid())
     title   String
-    content String?
+    content String
 
     author String
 
@@ -22,12 +22,12 @@ model Post {
 
     category String
 
-    location Json
+    location Json @default("{\"district\": \"\", \"area\": \"\"}")
 
     images String[]
 
-    upVote Int
-    downVote Int
+    upVote   Int @default(0)
+    downVote Int @default(0)
 
     createdAt DateTime @default(now()) @map(name: "created_at")
     updatedAt DateTime @updatedAt @map(name: "updated_at")
