@@ -4,6 +4,8 @@ import React from "react";
 import prisma from "../../../lib/prisma";
 import PostDetails from "@/components/PostDetails";
 
+export const revalidate = 0;
+
 interface PageParams {
   params: {
     id: string;
