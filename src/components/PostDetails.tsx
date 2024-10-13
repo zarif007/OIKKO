@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/carousel";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 import { CgDanger } from "react-icons/cg";
-import IPost, { Location } from "@/types/post";
+import { Location } from "@/types/post";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import Link from "next/link";
 import { IoChevronBackOutline } from "react-icons/io5";
