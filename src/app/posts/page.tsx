@@ -2,6 +2,8 @@ import React from "react";
 import prisma from "../../lib/prisma";
 import Post from "@/components/Post";
 
+export const revalidate = 0;
+
 const getPosts = async () => {
   const post = await prisma.post.findMany();
 
