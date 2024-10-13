@@ -67,11 +67,15 @@ const Post: React.FC<{ post: IPost }> = ({ post }) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p>
-              {post?.content && post?.content?.length > 100
-                ? `${post.content.substring(0, 100)}...`
-                : post.content}
-            </p>
+            {post.content ? (
+              <p>
+                {post.content?.length > 100
+                  ? `${post.content.substring(0, 100)}...`
+                  : post.content}
+              </p>
+            ) : (
+              <></>
+            )}
           </CardContent>
           <div className="flex justify-end p-2 items-center space-x-2">
             {post.images?.length ? (

@@ -9,12 +9,12 @@ import {
 } from "@/components/ui/carousel";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 import { CgDanger } from "react-icons/cg";
-import { Location } from "@/types/post";
+import IPost, { Location } from "@/types/post";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import Link from "next/link";
 import { IoChevronBackOutline } from "react-icons/io5";
 
-const PostDetails: React.FC<{ post: any }> = ({ post }) => {
+const PostDetails: React.FC<{ post: IPost }> = ({ post }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [vote, setVote] = useState<"" | "up" | "down">("");
 
@@ -93,11 +93,15 @@ const PostDetails: React.FC<{ post: any }> = ({ post }) => {
         </p>
 
         <div className="my-4">
-          <h3 className="text-md font-medium">
-            {isExpanded
-              ? post.content
-              : `${post.content?.substring(0, 300)}...`}
-          </h3>
+          {post.content ? (
+            <h3 className="text-md font-medium">
+              {isExpanded
+                ? post.content
+                : `${post.content?.substring(0, 300)}...`}
+            </h3>
+          ) : (
+            <></>
+          )}
           <button
             className="text-blue-500 font-medium hover:underline mt-2"
             onClick={toggleReadMore}
@@ -116,7 +120,7 @@ const PostDetails: React.FC<{ post: any }> = ({ post }) => {
         {post.images.length ? (
           <Carousel>
             <CarouselContent>
-              {post.images?.map((image: string, index: number) => (
+              {post.images.map((image, index) => (
                 <CarouselItem key={index}>
                   <div className="relative">
                     <p className="absolute top-2 right-2 z-10 text-white bg-black bg-opacity-50 px-2 py-1 rounded">

@@ -8,7 +8,7 @@ export interface Location {
 interface IPost {
   id: string;
   title: string;
-  content?: string;
+  content?: string | null;
   author: string;
   from: Date;
   to: Date;
