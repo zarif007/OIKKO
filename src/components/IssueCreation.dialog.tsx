@@ -19,6 +19,7 @@ const IssueCreationDialog = () => {
 
   const [steps, setSteps] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [post, setPost] = useState({
     author: "",
@@ -35,7 +36,22 @@ const IssueCreationDialog = () => {
   });
 
   const handlePostSubmit = async () => {
-    setIsSubmitting(true); // Set loading state to true
+    setErrorMessage("");
+    if (
+      !post.author ||
+      !post.title ||
+      !post.content ||
+      !post.category ||
+      !post.location.district ||
+      !post.location.area ||
+      !post.from ||
+      !post.to
+    ) {
+      setErrorMessage("Please fill in all required fields.");
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       const response = await fetch("/api/add-post", {
         method: "POST",
@@ -66,8 +82,9 @@ const IssueCreationDialog = () => {
           <CardHeader>
             <CardTitle>Post an Issue</CardTitle>
           </CardHeader>
-          <CardContent className="">
-            <form className="">
+          <CardContent>
+            {/* Display error message */}
+            <form>
               <div className="grid gap-4">
                 {steps === 1 ? (
                   <FirstStepForm post={post} setPost={setPost} />
@@ -76,7 +93,11 @@ const IssueCreationDialog = () => {
                 )}
               </div>
             </form>
+            {errorMessage && (
+              <p className="text-red-500 font-medium my-2">{errorMessage}</p>
+            )}
           </CardContent>
+
           <CardFooter className="flex justify-between space-x-2 w-full">
             {steps === 2 && (
               <Button

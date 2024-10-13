@@ -113,7 +113,7 @@ const PostDetails: React.FC<{ post: IPost }> = ({ post }) => {
               : "Location not available"}
           </p>
         </div>
-        {post.images.length && (
+        {post.images.length ? (
           <Carousel>
             <CarouselContent>
               {post.images.map((image, index) => (
@@ -128,6 +128,8 @@ const PostDetails: React.FC<{ post: IPost }> = ({ post }) => {
               ))}
             </CarouselContent>
           </Carousel>
+        ) : (
+          <></>
         )}
       </div>
     </div>
