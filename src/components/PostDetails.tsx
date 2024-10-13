@@ -14,7 +14,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import Link from "next/link";
 import { IoChevronBackOutline } from "react-icons/io5";
 
-const PostDetails: React.FC<{ post: IPost }> = ({ post }) => {
+const PostDetails: React.FC<{ post: any }> = ({ post }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [vote, setVote] = useState<"" | "up" | "down">("");
 
@@ -116,7 +116,7 @@ const PostDetails: React.FC<{ post: IPost }> = ({ post }) => {
         {post.images.length ? (
           <Carousel>
             <CarouselContent>
-              {post.images.map((image, index) => (
+              {post.images?.map((image: string, index: number) => (
                 <CarouselItem key={index}>
                   <div className="relative">
                     <p className="absolute top-2 right-2 z-10 text-white bg-black bg-opacity-50 px-2 py-1 rounded">
